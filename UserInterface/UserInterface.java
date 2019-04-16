@@ -4,25 +4,27 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import java.sql.*;
-import com.mysql.jdbc.PreparedStatement;
+
 
 import MySQL.MysqlCon;
 
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 
 public class UserInterface {
 
 	private JFrame frame;
-	private JTextField answer;
-	private JTextField textUser;
-	private JTextField textPassword;
+	
+	
 
 	/**
 	 * Launch the application.
@@ -39,14 +41,33 @@ public class UserInterface {
 			}
 		});
 	}
+	
+	public Connection dbConnector() {
+		try{  
+			Class.forName("com.mysql.jdbc.Driver");  
+			Connection con=DriverManager.getConnection(  
+			"jdbc:mysql://localhost:3306/java","root","root");  
+			 
+			Statement stmt=con.createStatement();  
+			ResultSet rs=stmt.executeQuery("select * from employeeinfo");  
+			while(rs.next())  
+			System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));  
+			
+			return con;
+			}catch(Exception ex){ System.out.println(ex);  
+		    throw new RuntimeException(ex);
+			}
+			} 
     
 	Connection connection = null;
+	private JTextField textUser;
+	private JPasswordField textPassword;
 	/**
 	 * Create the application.
 	 */
 	public UserInterface() {
 		initialize();
-		connection = MysqlCon.dbConnector();
+		connection = dbConnector();
 	}
 
 	/**
@@ -77,22 +98,32 @@ public class UserInterface {
 		frame.getContentPane().add(textUser);
 		textUser.setColumns(10);
 		
-		textPassword = new JTextField();
-		textPassword.setBounds(219, 172, 115, 34);
-		frame.getContentPane().add(textPassword);
-		textPassword.setColumns(10);
-		
+	
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					  String query = "SELECT * FROM EmployeeInfo WHERE username = ? "
-					  		+ "and password = ? ";
-					  java.sql.PreparedStatement pst = connection.prepareStatement(query);
-					  pst.setString(0, textUser.getText());
-					  pst.setString(1, textPassword.getText());
+					  String query = "select * from EmployeeInfo where username=? and password=? ";
+					  PreparedStatement pst = connection.prepareStatement(query);
+					  
+					  pst.setString(1, textUser.getText());
+					  pst.setString(2, textPassword.getText());
 					  
 					  ResultSet rs = pst.executeQuery();
+					  int count = 0;
+					  while(rs.next()) {
+						  count++;
+					  }
+					  if(count == 1) {
+							JOptionPane.showMessageDialog(null, "Username and password is correct"); 
+							frame.dispose();
+							LoginSuccesful logSuccesful = new LoginSuccesful();
+							logSuccesful.setVisible(true);
+					  } else if (count > 1) {
+						  JOptionPane.showMessageDialog(null, "Duplicate username and password is correct");
+					  } else {
+						  JOptionPane.showMessageDialog(null, "Username and password is not correct");
+					  }
 					  
 				} catch (Exception e)
 				{
@@ -100,10 +131,21 @@ public class UserInterface {
 					JOptionPane.showMessageDialog(null, e);
 					
 				}
+				
 			}
 		});
 		btnLogin.setBounds(219, 241, 89, 23);
 		frame.getContentPane().add(btnLogin);
+		
+		textPassword = new JPasswordField();
+		textPassword.setBounds(219, 170, 115, 34);
+		frame.getContentPane().add(textPassword);
+		
+		JLabel label_1 = new JLabel("");
+		Image img = new ImageIcon(this.getClass().getResource("/icons8-customer-52.png")).getImage();
+		label_1.setIcon(new ImageIcon(img));
+		label_1.setBounds(25, 37, 107, 227);
+		frame.getContentPane().add(label_1);
 		
 	
 		
