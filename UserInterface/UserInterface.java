@@ -94,7 +94,7 @@ public class UserInterface {
 		frame.getContentPane().add(lblNewLabel_1);
 		
 		textUser = new JTextField();
-		textUser.setBounds(219, 106, 115, 34);
+		textUser.setBounds(219, 106, 188, 34);
 		frame.getContentPane().add(textUser);
 		textUser.setColumns(10);
 		
@@ -103,7 +103,7 @@ public class UserInterface {
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					  String query = "select * from EmployeeInfo where username=? and password=? ";
+					  String query = "select * from employeeinfo where username=? and password=? ";
 					  PreparedStatement pst = connection.prepareStatement(query);
 					  
 					  pst.setString(1, textUser.getText());
@@ -134,11 +134,11 @@ public class UserInterface {
 				
 			}
 		});
-		btnLogin.setBounds(219, 241, 89, 23);
+		btnLogin.setBounds(219, 228, 89, 23);
 		frame.getContentPane().add(btnLogin);
 		
 		textPassword = new JPasswordField();
-		textPassword.setBounds(219, 170, 115, 34);
+		textPassword.setBounds(219, 170, 188, 34);
 		frame.getContentPane().add(textPassword);
 		
 		JLabel label_1 = new JLabel("");
@@ -146,6 +146,18 @@ public class UserInterface {
 		label_1.setIcon(new ImageIcon(img));
 		label_1.setBounds(25, 37, 107, 227);
 		frame.getContentPane().add(label_1);
+		
+		JButton btnNewButton = new JButton("SignUp");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				frame.dispose();
+				SignUp signUp = new SignUp();
+				signUp.setVisible(true);
+			}
+		});
+		btnNewButton.setBounds(318, 228, 89, 23);
+		frame.getContentPane().add(btnNewButton);
 		
 	
 		
