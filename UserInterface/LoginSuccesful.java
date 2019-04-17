@@ -64,7 +64,7 @@ public class LoginSuccesful extends JFrame {
 			}catch(Exception ex){ System.out.println(ex);  
 		    throw new RuntimeException(ex);
 			}
-			} 
+		} 
     
 	Connection connection = null;
 	
@@ -103,11 +103,13 @@ public class LoginSuccesful extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				try {
-					String query = "select EID, name, surname, username, age from EmployeeInfo";
+					String query = "select EID, name, surname, username, age from employeeinfo";
 					PreparedStatement pst = connection.prepareStatement(query);
 					ResultSet rs = pst.executeQuery();
 					table_1.setModel(DbUtils.resultSetToTableModel(rs));
 					
+					pst.close();
+					rs.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
